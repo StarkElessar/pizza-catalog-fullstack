@@ -1,0 +1,30 @@
+@import "../config/functions";
+
+.home-form {
+  max-width: rem(500);
+  margin-inline: auto;
+  padding-block: rem(40);
+
+  display: flex;
+  flex-direction: column;
+  gap: rem(20);
+
+  &__fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: rem(5);
+  }
+
+  &__control {
+    border: rem(1) solid var(--black-color);
+    border-radius: var(--bs-radius);
+    padding: rem(10);
+  }
+
+  &__button {
+    padding: rem(10);
+    background-color: var(--black-color);
+    color: #fff;
+    border-radius: var(--bs-radius);
+  }
+}

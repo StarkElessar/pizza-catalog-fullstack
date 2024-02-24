@@ -1,0 +1,9 @@
+{
+  "ignore": [
+    "public/",
+    "client/",
+    "build-config/",
+    "node_modules/",
+    ".gitignore"
+  ]
+}

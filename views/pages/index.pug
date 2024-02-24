@@ -1,0 +1,35 @@
+extends ../layouts/default
+
+//- Place to connect a variables:
+block vars
+    - pageTitle = title
+    include ../vars
+
+//- Place to connect the header
+block header
+    include ../shared/header
+
+//- Place to connect content of the page:
+block contentPage
+    main.page
+        div(data-observ)
+        .page__container
+            form#form.home-form
+                fieldset.home-form__fieldset
+                    label(for='username').home-form__label Имя пользователя
+                    input#username.home-form__control(name='username', placeholder='Введите имя пользователя')
+                fieldset.home-form__fieldset
+                    label(for='email').home-form__label Email адрес
+                    input#email.home-form__control(name='email', placeholder='Введите Email')
+                button(type='submit').home-form__button Создать пользователя
+
+            .page__users
+                each user in users
+                    .page__user
+                        p User ID: #{user.id}
+                        p Username: #{user.username ? user.username : 'Unknown'}
+                        p Email: #{user.email ? user.email : 'Unknown'}
+
+//- Place to connect the footer:
+block footer
+    include ../shared/footer

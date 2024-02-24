@@ -1,0 +1,24 @@
+@use "sass:math";
+
+// To percent %:
+@function prc($px-first, $px-second) {
+  $result: math.div($px-first, $px-second) * 100%;
+  @return $result;
+}
+
+// To rem:
+@function rem($px) {
+  $result: math.div($px, 16) + rem;
+  @return $result;
+}
+
+// To em:
+@function em($px) {
+  $result: math.div($px, 16) + em;
+  @return $result;
+}
+
+// To vw:
+@function vw($px, $base-width: 1920) {
+  @return math.div($px, $base-width) * 100vw;
+}
