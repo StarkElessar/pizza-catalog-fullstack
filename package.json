@@ -5,6 +5,7 @@
   "main": "main.js",
   "type": "module",
   "scripts": {
+    "lint:scss": "stylelint -c client/stylelint.config.js client/styles/**/*.scss --fix",
     "client:dev": "node build-config/esbuild.config.js --development",
     "client:build": "node build-config/esbuild.config.js",
     "dev": "cross-env NODE_ENV=development nodemon server/main.js",
@@ -14,12 +15,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@archoleat/stylelint-config-extended-scss": "^1.5.8",
     "autoprefixer": "^10.4.17",
     "esbuild": "^0.20.1",
     "esbuild-sass-plugin": "^3.1.0",
     "nodemon": "^3.1.0",
     "postcss": "^8.4.35",
-    "postcss-combine-media-query": "^1.0.1"
+    "postcss-combine-media-query": "^1.0.1",
+    "stylelint": "^16.2.1"
   },
   "dependencies": {
     "chalk": "^5.3.0",
