@@ -1,19 +1,23 @@
 @import "vars";
 @import "functions";
 
-[class*='__container'] {
-  max-width: rem($max-width-container);
+[class*="__container"] {
   margin: 0 auto;
+
+  max-inline-size: rem($max-width-container);
+
   padding: 0 rem($main-offset);
 }
 
 .wrapper {
   display: flex;
-  flex-direction: column;
-  min-height: 100%;
+
+  min-block-size: 100%;
 
   /** Поменять на clip - если используется в проекте position: sticky */
   overflow: hidden;
+
+  flex-direction: column;
 }
 
 .page {
