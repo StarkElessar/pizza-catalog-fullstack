@@ -1,0 +1,22 @@
+extends ../layouts/default
+
+//- Place to connect a variables:
+block vars
+	- pageTitle = title
+	- listLinks = links
+	include ../vars
+
+//- Place to connect the header
+block header
+	include ../shared/header
+
+//- Place to connect content of the page:
+block contentPage
+	main.page
+		div(data-observ)
+		.page__container
+			h1 Admin panel
+
+//- Place to connect the footer:
+block footer
+	include ../shared/footer
