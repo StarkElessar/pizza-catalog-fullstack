@@ -1,0 +1,6 @@
+mixin nav-links(items)
+	nav.header__menu.menu
+		ul.menu__list
+			each item in items
+				li.menu__item
+					a.menu__link(href=item.link, title=item.name) #{item.name}
