@@ -29,6 +29,18 @@ export default [
             'prefer-promise-reject-errors': 'off',
             indent: ['error', 4],
             'max-len': ['error', { code: 140 }],
+	        'lines-between-class-members': [
+		        "error",
+		        {
+			        enforce: [
+				        {
+							blankLine: "always",
+					        prev: "method",
+					        next: "method"
+						}
+			        ]
+		        },
+	        ]
         },
     },
 ];
