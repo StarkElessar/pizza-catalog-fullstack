@@ -5,6 +5,8 @@ export default {
             options: {
                 singleQuote: true,
                 semi: true,
+	            bracketSpacing: true,
+	            arrowParens: 'always',
             },
         },
         {
