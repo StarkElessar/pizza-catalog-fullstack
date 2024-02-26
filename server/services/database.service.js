@@ -14,45 +14,55 @@ export class DatabaseService {
     }
 
     async connect() {
-		await this.#createMigrationsTableIfExists();
-		const migrationsResult = await this.#executeQuery('SELECT * FROM migrations');
-		await this.#applyMigrations(migrationsResult);
+        await this.#createMigrationsTableIfExists();
+        const migrationsResult = await this.#executeQuery('SELECT * FROM migrations');
+        await this.#applyMigrations(migrationsResult);
     }
 
-	async #applyMigrations(migrationsData) {
-		const migrationDir = resolve('migrations');
+    async #applyMigrations(migrationsData) {
+        const migrationDir = resolve('migrations');
+        const promises = [];
 
-		try {
-			const files = await readdir(migrationDir);
+        try {
+            const files = await readdir(migrationDir);
 
-			for (const file of files) {
-				const existsRecordIndex = migrationsData.findIndex(({ file_name }) => file_name === file);
+            for (const file of files) {
+                const existsRecordIndex = migrationsData.findIndex(({ file_name }) => file_name === file);
 
-				if (existsRecordIndex !== -1) {
-					this.#logger.log(`[DatabaseService] ${file} эта миграция уже была применена`);
-					return;
-				}
+                if (existsRecordIndex !== -1) {
+                    this.#logger.log(`[DatabaseService] ${file} эта миграция уже была применена`);
+                    return;
+                }
 
-				const migrationFile = resolve(migrationDir, file);
-				const migrationScript = await readFile(migrationFile, 'utf8');
+                promises.push(this.#applyMigrationsAndInsertRecord(migrationDir, files));
+            }
 
-				await this.#executeMigration(migrationScript);
-				this.#db.run('INSERT INTO migrations (file_name) VALUES (?)', [file], function(error) {
-					if (error) {
-						console.log({ error })
-					} else {
-						console.log({ lastID: this.lastID, changes: this.changes })
-					}
-				});
-			}
-		} catch (error) {
-			this.#logger.error('[DatabaseService] Ошибка при применении миграций:', error);
-		}
-	}
+            await Promise.all(promises);
+        } catch (error) {
+            this.#logger.error('[DatabaseService] Ошибка при применении миграций:', error);
+        }
+    }
 
-	async #createMigrationsTableIfExists() {
-		// SQL запрос для проверки существования таблицы и получения записей
-		return this.#executeQuery(`
+    async #applyMigrationsAndInsertRecord(migrationDir, file) {
+        const migrationFile = resolve(migrationDir, file);
+        const migrationScript = await readFile(migrationFile, 'utf8');
+
+        await this.#executeMigration(migrationScript);
+
+        return new Promise((promiseResolve, reject) => {
+            this.#db.run('INSERT INTO migrations (file_name) VALUES (?)', [file], function (error) {
+                if (error) {
+                    reject(error);
+                } else {
+                    promiseResolve({ lastID: this.lastID, changes: this.changes });
+                }
+            });
+        });
+    }
+
+    async #createMigrationsTableIfExists() {
+        // SQL запрос для проверки существования таблицы и получения записей
+        return this.#executeQuery(`
 	        CREATE TABLE IF NOT EXISTS migrations
 	        (
 	            id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,29 +70,29 @@ export class DatabaseService {
 	            date DATE DEFAULT CURRENT_TIMESTAMP
 	        );
 		`);
-	}
+    }
 
-	#executeQuery(query) {
-		return new Promise((resolve, reject) => {
-			// Выполняем запрос
-			this.#db.serialize(() => {
-				this.#db.all(query, (error, rows) => {
-					if (error) reject(error)
-					resolve(rows);
-				});
-			});
-		});
-	}
+    #executeQuery(query) {
+        return new Promise((promiseResolve, reject) => {
+            // Выполняем запрос
+            this.#db.serialize(() => {
+                this.#db.all(query, (error, rows) => {
+                    if (error) reject(error);
+                    promiseResolve(rows);
+                });
+            });
+        });
+    }
 
-	async #executeMigration(migrationScript) {
-		return new Promise((resolve, reject) => {
-			this.#db.exec(migrationScript, (error) => {
-				if (error) reject({ message: 'Произошла ошибка при накатывании миграций', error});
+    async #executeMigration(migrationScript) {
+        return new Promise((promiseResolve, reject) => {
+            this.#db.exec(migrationScript, (error) => {
+                if (error) reject({ message: 'Произошла ошибка при накатывании миграций', error });
 
-				resolve();
-			});
-		});
-	}
+                promiseResolve();
+            });
+        });
+    }
 
     get db() {
         return this.#db;
