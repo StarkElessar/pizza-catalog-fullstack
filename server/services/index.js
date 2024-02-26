@@ -1,3 +1,3 @@
-export * from './logger.service.js';
-export * from './database.service.js';
-export * from './config.service.js';
+export { LoggerService } from './logger.service.js';
+export { DatabaseService } from './database.service.js';
+export { ConfigService } from './config.service.js';

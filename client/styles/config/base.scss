@@ -2,24 +2,20 @@
 @import "functions";
 
 [class*="__container"] {
-  margin: 0 auto;
-
-  max-inline-size: rem($max-width-container);
-
-  padding: 0 rem($main-offset);
+	margin: 0 auto;
+	max-inline-size: rem($max-width-container);
+	padding: 0 rem($main-offset);
 }
 
 .wrapper {
-  display: flex;
+	display: flex;
+	min-block-size: 100%;
 
-  min-block-size: 100%;
-
-  /** Поменять на clip - если используется в проекте position: sticky */
-  overflow: hidden;
-
-  flex-direction: column;
+	/** Поменять на clip - если используется в проекте position: sticky */
+	overflow: hidden;
+	flex-direction: column;
 }
 
 .page {
-  flex: 1 1 auto;
+	flex: 1 1 auto;
 }

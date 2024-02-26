@@ -1,40 +1,29 @@
 @import "../config/functions";
 
 .home-form {
-  display: flex;
+	display: flex;
+	margin-inline: auto;
+	max-inline-size: rem(500);
+	padding-block: rem(40);
+	gap: rem(20);
+	flex-direction: column;
 
-  margin-inline: auto;
+	&__fieldset {
+		display: flex;
+		gap: rem(5);
+		flex-direction: column;
+	}
 
-  max-inline-size: rem(500);
+	&__control {
+		border: rem(1) solid var(--black-color);
+		border-radius: var(--bs-radius);
+		padding: rem(10);
+	}
 
-  padding-block: rem(40);
-
-  gap: rem(20);
-
-  flex-direction: column;
-
-  &__fieldset {
-    display: flex;
-
-    gap: rem(5);
-
-    flex-direction: column;
-  }
-
-  &__control {
-    border: rem(1) solid var(--black-color);
-    border-radius: var(--bs-radius);
-
-    padding: rem(10);
-  }
-
-  &__button {
-    border-radius: var(--bs-radius);
-
-    padding: rem(10);
-
-    color: #fff;
-
-    background-color: var(--black-color);
-  }
+	&__button {
+		border-radius: var(--bs-radius);
+		padding: rem(10);
+		color: #fff;
+		background-color: var(--black-color);
+	}
 }
