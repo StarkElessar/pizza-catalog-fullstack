@@ -28,6 +28,10 @@ export class HomeController extends BaseController {
                 language: 'ru',
                 title: 'Настройка приложения. Старт!',
                 users: users.data,
+	            links: [
+		            { name: 'Home Page', link: '/' },
+		            { name: 'Admin Page', link: '/admin' },
+	            ],
             });
         } catch (error) {
             console.log('Ошибка в контроллере: HomeController.index', error);

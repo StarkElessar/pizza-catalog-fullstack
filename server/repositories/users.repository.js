@@ -19,13 +19,13 @@ export class UsersRepository {
 
     async create({ username, email }) {
         return new Promise((resolve, reject) => {
-            this.#databaseService.db.run('INSERT INTO users (username, email) VALUES (?, ?)', [username, email], function (error) {
-                if (error) {
-                    reject({ message: 'Ошибка при сохранении данных', error });
-                }
+	        this.#databaseService.db.run('INSERT INTO users (username, email) VALUES (?, ?)', [username, email], function (error) {
+	            if (error) {
+	                reject({ message: 'Ошибка при сохранении данных', error });
+	            }
 
-                resolve({ message: 'Пользователь успешно сохранен', data: this.lastID });
-            });
+	            resolve({ message: 'Пользователь успешно сохранен', data: this.lastID });
+	        });
         });
     }
 }

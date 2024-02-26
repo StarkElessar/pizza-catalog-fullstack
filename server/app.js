@@ -6,7 +6,7 @@ export class App {
     #logger;
     #homeController;
     #usersController;
-	#adminController;
+    #adminController;
     #databaseService;
     #configService;
     #exceptionFilter;
@@ -23,7 +23,7 @@ export class App {
         this.#logger = logger;
         this.#homeController = homeController;
         this.#usersController = usersController;
-		this.#adminController = adminController;
+        this.#adminController = adminController;
         this.#databaseService = databaseService;
         this.#configService = configService;
         this.#exceptionFilter = exceptionFilter;
@@ -45,7 +45,7 @@ export class App {
 
     useRoutes() {
         this.app.use('/', this.#homeController.router);
-		this.app.use('/admin', this.#adminController.router);
+        this.app.use('/admin', this.#adminController.router);
         this.app.use('/api/users', this.#usersController.router);
     }
 
