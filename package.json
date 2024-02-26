@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "lint:scss": "stylelint -c client/stylelint.config.js client/styles/**/*.scss --fix",
-    "eslint:js": "eslint **/*.js --fix",
+    "eslint:js": "eslint {build-config,client,server,utils}/**/*.js --fix",
     "client:dev": "node build-config/esbuild.config.js --development",
     "client:build": "node build-config/esbuild.config.js",
     "dev": "cross-env NODE_ENV=development nodemon server/main.js",
