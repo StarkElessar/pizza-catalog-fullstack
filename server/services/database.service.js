@@ -14,9 +14,13 @@ export class DatabaseService {
     }
 
     async connect() {
-        await this.#createMigrationsTableIfExists();
-        const migrationsResult = await this.#executeQuery('SELECT * FROM migrations');
-        await this.#applyMigrations(migrationsResult);
+	    let migrationsResult = [];
+
+		try {
+	        migrationsResult = await this.#executeQuery('SELECT * FROM migrations');
+		} catch (err) {} finally {
+	        await this.#applyMigrations(migrationsResult);
+		}
     }
 
     async #applyMigrations(migrationsData) {
@@ -31,10 +35,10 @@ export class DatabaseService {
 
                 if (existsRecordIndex !== -1) {
                     this.#logger.log(`[DatabaseService] ${file} эта миграция уже была применена`);
-                    return;
+                    continue;
                 }
 
-                promises.push(this.#applyMigrationsAndInsertRecord(migrationDir, files));
+                promises.push(this.#applyMigrationsAndInsertRecord(migrationDir, file));
             }
 
             await Promise.all(promises);
@@ -58,18 +62,6 @@ export class DatabaseService {
                 }
             });
         });
-    }
-
-    async #createMigrationsTableIfExists() {
-        // SQL запрос для проверки существования таблицы и получения записей
-        return this.#executeQuery(`
-	        CREATE TABLE IF NOT EXISTS migrations
-	        (
-	            id INTEGER PRIMARY KEY AUTOINCREMENT,
-	            file_name TEXT NOT NULL,
-	            date DATE DEFAULT CURRENT_TIMESTAMP
-	        );
-		`);
     }
 
     #executeQuery(query) {
