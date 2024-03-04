@@ -9,8 +9,8 @@
     "eslint:js": "eslint {build-config,client,server,utils}/**/*.js --fix",
     "client:dev": "node build-config/esbuild.config.js --development",
     "client:build": "node build-config/esbuild.config.js",
-    "dev": "cross-env NODE_ENV=development nodemon server/main.js",
-    "start": "cross-env NODE_ENV=production npm run client:build && node server/main.js"
+    "server:dev": "cross-env NODE_ENV=development nodemon server/main.js",
+    "server:start": "npm run client:build && cross-env NODE_ENV=production node server/main.js"
   },
   "keywords": [],
   "author": "",
