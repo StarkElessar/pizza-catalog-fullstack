@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const form = document.querySelector('#form');
 
     form.addEventListener('submit', async (event) => {
