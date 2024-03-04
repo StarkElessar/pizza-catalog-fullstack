@@ -13,7 +13,7 @@ function bootstrap() {
 
     const loggerService = new LoggerService(logFilePath);
     const configService = new ConfigService({ logger: loggerService });
-    const databaseService = new DatabaseService({ sqlite, logger: loggerService });
+    const databaseService = new DatabaseService({ sqlite: sqlite.verbose(), logger: loggerService });
     const usersRepository = new UsersRepository({ databaseService });
     const productRepository = new ProductRepository({ databaseService });
 

@@ -8,10 +8,12 @@ export class ConfigService {
     constructor({ logger }) {
         this.#logger = logger;
 
-        const result = config({ path: resolve(`.env.${process.env.NODE_ENV}`) });
+		const envPath = resolve(`.env.${process.env.NODE_ENV}`);
+        const result = config({ path: envPath });
 
         if (result.error) {
-            this.#logger.error('[ConfigService]: Не удалось прочитать .env или он отсутствует');
+            this.#logger.error(`[ConfigService]: Не удалось прочитать ${envPath} или он отсутствует`);
+			process.exit(1);
             return;
         }
 

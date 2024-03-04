@@ -1,27 +1,42 @@
 import { resolve } from 'node:path';
 import { readdir, readFile } from 'node:fs/promises';
+import { BaseDatabaseService } from './base-database.service.js';
 
-export class DatabaseService {
-    #db;
+export class DatabaseService extends BaseDatabaseService {
     #logger;
 
     constructor({ logger, sqlite }) {
-        this.#logger = logger;
+		super(logger, sqlite);
 
-        sqlite.verbose();
-	    // Открываем соединение с базой данных
-        this.#db = new sqlite.Database(resolve('database.sqlite'));
+        this.#logger = logger;
     }
 
     async connect() {
 	    let migrationsResult = [];
 
 		try {
-	        migrationsResult = await this.#executeQuery('SELECT * FROM migrations');
-		} catch (err) {} finally {
+	        migrationsResult = await this.#getMigrationRecords();
+		} catch (err) {
+			console.log(err);
+			this.#logger.warn('[DatabaseService] Таблица migrations отстутствует в БД.', err.message);
+		} finally {
 	        await this.#applyMigrations(migrationsResult);
 		}
     }
+
+	close() {
+		return new Promise((promiseResolve, reject) => {
+			this.db.close((error) => {
+				if (error) {
+					this.#logger.error(`[DatabaseService] Произошла ошибка при закрытии подключения к БД`, error.message);
+					reject(error);
+				}
+
+				this.#logger.log(`[DatabaseService] Подключение к БД закрыто`);
+				promiseResolve();
+			});
+		});
+	}
 
     async #applyMigrations(migrationsData) {
         const migrationDir = resolve('migrations');
@@ -43,7 +58,7 @@ export class DatabaseService {
 
             await Promise.all(promises);
         } catch (error) {
-            this.#logger.error('[DatabaseService] Ошибка при применении миграций:', error);
+            this.#logger.error('[DatabaseService] Ошибка при применении миграций.', error.message);
         }
     }
 
@@ -54,7 +69,7 @@ export class DatabaseService {
         await this.#executeMigration(migrationScript);
 
         return new Promise((promiseResolve, reject) => {
-            this.#db.run('INSERT INTO migrations (file_name) VALUES (?)', [file], function (error) {
+            this.db.run('INSERT INTO migrations (file_name) VALUES (?)', [file], function (error) {
                 if (error) {
                     reject(error);
                 } else {
@@ -64,29 +79,22 @@ export class DatabaseService {
         });
     }
 
-    #executeQuery(query) {
+    #getMigrationRecords() {
         return new Promise((promiseResolve, reject) => {
-            // Выполняем запрос
-            this.#db.serialize(() => {
-                this.#db.all(query, (error, rows) => {
-                    if (error) reject(error);
-                    promiseResolve(rows);
-                });
-            });
+	        this.db.all('SELECT * FROM migrations', (error, rows) => {
+		        if (error) reject(error);
+		        promiseResolve(rows);
+	        });
         });
     }
 
-    async #executeMigration(migrationScript) {
+    #executeMigration(migrationScript) {
         return new Promise((promiseResolve, reject) => {
-            this.#db.exec(migrationScript, (error) => {
-                if (error) reject({ message: 'Произошла ошибка при накатывании миграций', error });
+            this.db.exec(migrationScript, (error) => {
+                if (error) reject(error);
 
                 promiseResolve();
             });
         });
-    }
-
-    get db() {
-        return this.#db;
     }
 }

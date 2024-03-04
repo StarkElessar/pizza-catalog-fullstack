@@ -6,15 +6,7 @@ export class UsersRepository {
     }
 
     async getAll() {
-        return new Promise((resolve, reject) => {
-            this.#databaseService.db.all('SELECT * FROM users', (error, rows) => {
-                if (error) {
-                    reject({ message: 'Не удалось получить пользователей', error });
-                } else {
-                    resolve({ data: rows });
-                }
-            });
-        });
+	    return this.#databaseService.getAll('SELECT * FROM (users)');
     }
 
     async create({ username, email }) {

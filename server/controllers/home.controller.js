@@ -27,7 +27,7 @@ export class HomeController extends BaseController {
             res.render('pages/index', {
                 language: 'ru',
                 title: 'Настройка приложения. Старт!',
-                users: users.data,
+                users,
 	            links: [
 		            { name: 'Home Page', link: '/' },
 		            { name: 'Admin Page', link: '/admin' },

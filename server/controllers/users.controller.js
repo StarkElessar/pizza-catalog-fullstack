@@ -27,7 +27,7 @@ export class UsersController extends BaseController {
     async getAll(req, res, next) {
         try {
             const result = await this.#usersRepository.getAll();
-            res.status(200).json({ data: result.data });
+            res.status(200).json({ data: result });
         } catch (error) {
             next(error);
         }

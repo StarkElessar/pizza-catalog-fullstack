@@ -58,11 +58,22 @@ export class App {
         this.useRoutes();
         this.useExceptionFilters();
 
-        this.#databaseService.connect();
+        await this.#databaseService.connect();
 
         this.server = this.app.listen(this.port, this.host, null, () => {
             this.#logger.log(`[App] Сервер запущен по адресу: http://localhost:${this.port}`);
         });
-        this.server.maxConnections = 10_000;
+
+	    process.on('SIGTERM', () => {
+		    // Выводим информационное сообщение о том, что получен сигнал SIGTERM
+		    this.#logger.log('Получен сигнал - SIGTERM. Закрываем HTTP сервер');
+
+		    // Закрываем HTTP-сервер
+		    this.server.close(() => {
+			    this.#databaseService.close();
+			    this.#logger.log('[App] Сервер успешно остановлен');
+			    process.exit(0);
+		    });
+	    });
     }
 }
